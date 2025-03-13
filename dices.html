@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dice Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ec7373;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .game-container {
+            text-align: center;
+            background-color: #f0f878;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .players {
+            display: flex;
+            justify-content: space-between;
+            gap: 50px;
+            margin: 20px 0;
+        }
+
+        .player {
+            width: 180px;
+            padding: 20px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .player img {
+            width: 100px;
+            height: 100px;
+        }
+
+        button {
+            width: 120px;
+            height: 50px;
+            font-size: 14px;
+            border-radius: 10px;
+            border: none;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .rollButton {
+            background-color: #04AA6D;
+        }
+        .rollButton:disabled {
+            background-color: #888;
+            cursor: not-allowed;
+        }
+        .rollButton:hover:not(:disabled) {
+            background-color: #028a5e;
+            transform: scale(1.1);
+        }
+
+        #restartButton {
+            background-color: #f44336;
+            display: none;
+        }
+
+        .active-player {
+            background-color: #0084ff;
+        }
+        .winner {
+            background-color: #19ce1f;
+        }
+        .loser {
+            background-color: #eb4858;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Dice Game</h1>
+        <div class="players">
+            <div id="player1" class="player active-player">
+                <h2>Player 1</h2>
+                <img id="dice1" src="https://upload.wikimedia.org/wikipedia/commons/2/2c/Alea_1.png" alt="Dice">
+                <p>Score: <span id="score1">0</span></p>
+                <button id="rollButton1" class="rollButton">🎲 Roll Dice</button>
+            </div>
+            <div id="player2" class="player">
+                <h2>Player 2</h2>
+                <img id="dice2" src="https://upload.wikimedia.org/wikipedia/commons/2/2c/Alea_1.png" alt="Dice">
+                <p>Score: <span id="score2">0</span></p>
+                <button id="rollButton2" class="rollButton" disabled>🎲 Roll Dice</button>
+            </div>
+        </div>
+        <button id="restartButton">Restart</button>
+        <p id="result"></p>
+    </div>
+
+    <script>
+        let targetScore;
+        do {
+            targetScore = parseInt(prompt("Enter the target score to win the game:", "20"), 10);
+        } while (isNaN(targetScore) || targetScore <= 0);
+
+        const rollButton1 = document.getElementById('rollButton1');
+        const rollButton2 = document.getElementById('rollButton2');
+        const restartButton = document.getElementById('restartButton');
+        const result = document.getElementById('result');
+        
+        const diceImages = [
+            'https://upload.wikimedia.org/wikipedia/commons/2/2c/Alea_1.png',
+            'https://upload.wikimedia.org/wikipedia/commons/b/b8/Alea_2.png',
+            'https://upload.wikimedia.org/wikipedia/commons/2/2f/Alea_3.png',
+            'https://upload.wikimedia.org/wikipedia/commons/8/8d/Alea_4.png',
+            'https://upload.wikimedia.org/wikipedia/commons/5/55/Alea_5.png',
+            'https://upload.wikimedia.org/wikipedia/commons/f/f4/Alea_6.png'
+        ];
+
+        let scores = [0, 0];
+        let currentPlayer = 0; 
+        let gamePlaying = true;
+
+        function rollDice(player) {
+            if (!gamePlaying || player !== currentPlayer) return;
+            
+            const diceRoll = Math.floor(Math.random() * 6) + 1;
+            document.getElementById(`dice${player + 1}`).src = diceImages[diceRoll - 1];
+            scores[player] += diceRoll;
+            document.getElementById(`score${player + 1}`).textContent = scores[player];
+            
+            checkWinner();
+            switchTurn();
+        }
+
+        function switchTurn() {
+            if (!gamePlaying) return;
+            
+            document.getElementById(`player${currentPlayer + 1}`).classList.remove("active-player");
+            currentPlayer = currentPlayer === 0 ? 1 : 0;
+            document.getElementById(`player${currentPlayer + 1}`).classList.add("active-player");
+            
+            rollButton1.disabled = currentPlayer !== 0;
+            rollButton2.disabled = currentPlayer !== 1;
+        }
+
+        function checkWinner() {
+            if (scores[0] >= targetScore && scores[1] >= targetScore) {
+                result.textContent = "🎉 It's a tie!";
+                endGame();
+            } else if (scores[0] >= targetScore) {
+                document.getElementById('player1').classList.add('winner');
+                document.getElementById('player2').classList.add('loser');
+                result.textContent = "🎉 Player 1 wins!";
+                endGame();
+            } else if (scores[1] >= targetScore) {
+                document.getElementById('player2').classList.add('winner');
+                document.getElementById('player1').classList.add('loser');
+                result.textContent = "🎉 Player 2 wins!";
+                endGame();
+            }
+        }
+
+        function endGame() {
+            gamePlaying = false;
+            rollButton1.disabled = true;
+            rollButton2.disabled = true;
+            restartButton.style.display = "inline-block";
+        }
+
+        rollButton1.addEventListener('click', () => rollDice(0));
+        rollButton2.addEventListener('click', () => rollDice(1));
+
+        restartButton.addEventListener('click', () => location.reload());
+    </script>
+</body>
+</html>
