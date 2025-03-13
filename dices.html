@@ -87,13 +87,13 @@
         <h1>Dice Game</h1>
         <div class="players">
             <div id="player1" class="player active-player">
-                <h2>Player 1</h2>
+                <h2 id="player1Name">Player 1</h2>
                 <img id="dice1" src="https://upload.wikimedia.org/wikipedia/commons/2/2c/Alea_1.png" alt="Dice">
                 <p>Score: <span id="score1">0</span></p>
                 <button id="rollButton1" class="rollButton">🎲 Roll Dice</button>
             </div>
             <div id="player2" class="player">
-                <h2>Player 2</h2>
+                <h2 id="player2Name">Player 2</h2>
                 <img id="dice2" src="https://upload.wikimedia.org/wikipedia/commons/2/2c/Alea_1.png" alt="Dice">
                 <p>Score: <span id="score2">0</span></p>
                 <button id="rollButton2" class="rollButton" disabled>🎲 Roll Dice</button>
@@ -104,6 +104,18 @@
     </div>
 
     <script>
+        let player1Name, player2Name;
+        do {
+            player1Name = prompt("Enter Player 1 Name:", "Player 1").trim();
+        } while (!player1Name);
+
+        do {
+            player2Name = prompt("Enter Player 2 Name:", "Player 2").trim();
+        } while (!player2Name);
+
+        document.getElementById("player1Name").textContent = player1Name;
+        document.getElementById("player2Name").textContent = player2Name;
+
         let targetScore;
         do {
             targetScore = parseInt(prompt("Enter the target score to win the game:", "20"), 10);
@@ -152,17 +164,17 @@
 
         function checkWinner() {
             if (scores[0] >= targetScore && scores[1] >= targetScore) {
-                result.textContent = "🎉 It's a tie!";
+                result.textContent = `🎉 It's a tie between ${player1Name} and ${player2Name}!`;
                 endGame();
             } else if (scores[0] >= targetScore) {
                 document.getElementById('player1').classList.add('winner');
                 document.getElementById('player2').classList.add('loser');
-                result.textContent = "🎉 Player 1 wins!";
+                result.textContent = `🎉 ${player1Name} wins!`;
                 endGame();
             } else if (scores[1] >= targetScore) {
                 document.getElementById('player2').classList.add('winner');
                 document.getElementById('player1').classList.add('loser');
-                result.textContent = "🎉 Player 2 wins!";
+                result.textContent = `🎉 ${player2Name} wins!`;
                 endGame();
             }
         }
