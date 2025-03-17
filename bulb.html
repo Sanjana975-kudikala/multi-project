@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bulb OnOff</title>
+  <style>body{
+  background: linear-gradient(to right, #0612b8, #ff5e62);
+}
+</style>
+</head>
+<body>
+  <center><h1 style="color: white;"> Bulb On And Off Switch</h1></center>
+  <center><img src="bulb.jpg" id="image" width="100px" height="150px" onclick="BulbOnOff()"></center>
+  <center><button id="On" value="OnandOff" onclick="BulbOnOff()" style="background-color: black; color: white;">On/Off</button>
+  <script>
+    function BulbOnOff(){
+      let img = document.getElementById("image");
+      if(img.src.includes("bulb")){
+        img.src="Bulb_On.jpg";
+      }
+      else{
+        img.src="bulb.jpg";
+      }
+    }
+  </script>
+  
+</body>
+</html>
